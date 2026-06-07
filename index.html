@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Professor AI — Business Research Evaluator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy-900: #060d1f;
+    --navy-800: #0a1530;
+    --navy-700: #0f1f44;
+    --navy-600: #16294f;
+    --navy-line: #25365f;
+    --gold: #c9a86a;
+    --gold-bright: #e3c789;
+    --gold-deep: #a8863f;
+    --cream: #ece6d7;
+    --cream-dim: #b7b0a0;
+    --ink-muted: #8590a8;
+    --danger: #d9776a;
+    --danger-soft: #c98b80;
+    --good: #8fb98a;
+    --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(18, 38, 82, 0.55) 0%, transparent 60%),
+      radial-gradient(900px 500px at 85% 10%, rgba(201, 168, 106, 0.06), transparent 55%),
+      linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 45%, var(--navy-900) 100%);
+    background-attachment: fixed;
+    color: var(--cream);
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: rgba(201, 168, 106, 0.3); color: #fff; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* ---------- Header ---------- */
+  header {
+    text-align: center;
+    padding: 64px 24px 40px;
+    position: relative;
+  }
+  .crest {
+    width: 68px; height: 68px; margin: 0 auto 22px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: var(--gold-bright);
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 30px;
+    box-shadow: 0 0 0 6px rgba(201, 168, 106, 0.08), inset 0 0 20px rgba(201,168,106,0.12);
+    background: radial-gradient(circle at 50% 35%, rgba(201,168,106,0.12), transparent 70%);
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(38px, 6vw, 60px);
+    letter-spacing: 0.5px;
+    margin: 0;
+    color: #fff;
+    text-shadow: 0 2px 30px rgba(201, 168, 106, 0.18);
+  }
+  h1 .ai { color: var(--gold-bright); font-style: italic; }
+  .tagline {
+    color: var(--cream-dim);
+    font-size: 19px;
+    letter-spacing: 0.3px;
+    margin-top: 12px;
+    font-style: italic;
+  }
+  .rule {
+    width: 120px; height: 1px; margin: 26px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    position: relative;
+  }
+  .rule::after {
+    content: '❧';
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    color: var(--gold); font-size: 16px; background: var(--navy-900); padding: 0 10px;
+  }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: linear-gradient(165deg, var(--navy-700), var(--navy-800));
+    border: 1px solid var(--navy-line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 14px;
+    padding: 1px;
+    background: linear-gradient(160deg, rgba(201,168,106,0.35), transparent 40%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  /* ---------- Input panel ---------- */
+  .panel { padding: 30px 32px 34px; margin-bottom: 26px; }
+
+  .tabs { display: flex; gap: 8px; margin: 16px 0 20px; }
+  .tab {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.4px;
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--cream-dim);
+    border: 1px solid var(--navy-line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .tab:hover { color: var(--cream); border-color: var(--gold-deep); }
+  .tab.active {
+    background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+    color: #1a1205; border-color: var(--gold);
+    box-shadow: 0 6px 16px -6px rgba(201,168,106,0.5);
+  }
+
+  textarea {
+    width: 100%; min-height: 240px; resize: vertical;
+    background: rgba(4, 9, 22, 0.55);
+    border: 1px solid var(--navy-line);
+    border-radius: 10px;
+    color: var(--cream);
+    font-family: 'EB Garamond', serif;
+    font-size: 17px; line-height: 1.65;
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { outline: none; border-color: var(--gold-deep); box-shadow: 0 0 0 3px rgba(201,168,106,0.1); }
+  textarea::placeholder { color: var(--ink-muted); font-style: italic; }
+
+  .dropzone {
+    border: 1.5px dashed var(--navy-line);
+    border-radius: 10px;
+    padding: 50px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(4, 9, 22, 0.35);
+  }
+  .dropzone:hover, .dropzone.drag { border-color: var(--gold); background: rgba(201,168,106,0.05); }
+  .dropzone .ico { font-size: 40px; color: var(--gold); }
+  .dropzone .big { font-family: 'Inter', sans-serif; font-weight: 600; margin-top: 12px; color: var(--cream); }
+  .dropzone .small { color: var(--ink-muted); font-size: 15px; margin-top: 6px; }
+  .filechip {
+    display: none; align-items: center; gap: 12px;
+    margin-top: 16px; padding: 12px 16px;
+    background: rgba(201,168,106,0.08);
+    border: 1px solid var(--gold-deep);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 14px;
+  }
+  .filechip.show { display: flex; }
+  .filechip .x { margin-left: auto; cursor: pointer; color: var(--cream-dim); font-size: 18px; }
+  .filechip .x:hover { color: var(--danger); }
+
+  .hidden { display: none !important; }
+
+  /* ---------- API key ---------- */
+  .keyrow { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .keyrow input {
+    flex: 1; min-width: 220px;
+    background: rgba(4, 9, 22, 0.55);
+    border: 1px solid var(--navy-line);
+    border-radius: 8px;
+    color: var(--cream);
+    font-family: 'Inter', monospace; font-size: 13px;
+    padding: 12px 14px;
+  }
+  .keyrow input:focus { outline: none; border-color: var(--gold-deep); }
+  .keyhint { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink-muted); margin-top: 10px; }
+
+  .actions { display: flex; align-items: center; gap: 18px; margin-top: 24px; flex-wrap: wrap; }
+  .evaluate {
+    font-family: 'Inter', sans-serif; font-weight: 600; letter-spacing: 0.5px;
+    font-size: 15px;
+    padding: 15px 38px;
+    color: #1a1205;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+    border: none; border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 12px 28px -10px rgba(201,168,106,0.55);
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .evaluate:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 34px -12px rgba(201,168,106,0.65); }
+  .evaluate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .err {
+    color: var(--danger-soft);
+    font-family: 'Inter', sans-serif; font-size: 14px;
+    background: rgba(217,119,106,0.08);
+    border: 1px solid rgba(217,119,106,0.3);
+    border-radius: 8px; padding: 12px 16px; margin-top: 18px;
+  }
+
+  /* ---------- Loading ---------- */
+  .loading { text-align: center; padding: 70px 24px; }
+  .quill { font-size: 46px; color: var(--gold); animation: sway 2.2s ease-in-out infinite; display: inline-block; }
+  @keyframes sway { 0%,100% { transform: rotate(-8deg);} 50% { transform: rotate(8deg);} }
+  .loading .ln { margin-top: 20px; font-style: italic; color: var(--cream-dim); font-size: 20px; }
+  .loading .sub { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-muted); margin-top: 8px; letter-spacing: 0.5px; }
+
+  /* ---------- Results ---------- */
+  #results { margin-top: 10px; }
+
+  .scorecard { padding: 40px 32px; margin-bottom: 26px; display: grid; grid-template-columns: 240px 1fr; gap: 36px; align-items: center; }
+  @media (max-width: 720px) { .scorecard { grid-template-columns: 1fr; text-align: center; } }
+
+  .ring-wrap { position: relative; width: 220px; height: 220px; margin: 0 auto; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--navy-600); stroke-width: 14; }
+  .ring-fg { fill: none; stroke: url(#goldgrad); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
+  .ring-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .ring-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 64px; color: #fff; line-height: 1; }
+  .ring-den { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--cream-dim); letter-spacing: 2px; margin-top: 4px; }
+  .grade-letter { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--gold-bright); margin-top: 10px; font-style: italic; }
+
+  .verdict h2 { font-family: 'Playfair Display', serif; font-size: 30px; margin: 6px 0 4px; color: #fff; }
+  .verdict .lang { font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+  .verdict .summary { color: var(--cream-dim); font-size: 18px; margin-top: 14px; }
+
+  .block { padding: 30px 32px; margin-bottom: 26px; }
+  .block > h3 {
+    font-family: 'Playfair Display', serif; font-size: 25px; color: #fff;
+    margin: 6px 0 22px; display: flex; align-items: center; gap: 12px;
+  }
+  .block > h3 .n { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--gold); border: 1px solid var(--gold-deep); border-radius: 6px; padding: 2px 9px; font-weight: 600; }
+
+  /* breakdown rows */
+  .crit { padding: 18px 0; border-bottom: 1px solid var(--navy-line); }
+  .crit:last-child { border-bottom: none; }
+  .crit-top { display: flex; align-items: baseline; gap: 12px; }
+  .crit-name { font-size: 20px; color: var(--cream); font-weight: 500; }
+  .crit-weight { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink-muted); }
+  .crit-score { margin-left: auto; font-family: 'Playfair Display', serif; font-size: 22px; color: var(--gold-bright); }
+  .bar { height: 8px; background: var(--navy-600); border-radius: 99px; margin: 12px 0 10px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--gold-deep), var(--gold-bright)); width: 0; transition: width 0.9s cubic-bezier(.2,.7,.2,1); }
+  .crit-note { color: var(--cream-dim); font-size: 16.5px; }
+
+  /* lists */
+  .item { padding: 18px 20px; border-radius: 10px; margin-bottom: 14px; background: rgba(4,9,22,0.4); border: 1px solid var(--navy-line); border-left: 3px solid var(--gold-deep); }
+  .item.prob { border-left-color: var(--danger); }
+  .item.good { border-left-color: var(--good); }
+  .item-head { display: flex; align-items: center; gap: 12px; }
+  .item-title { font-size: 19px; color: var(--cream); font-weight: 500; }
+  .sev { font-family: 'Inter', sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+  .sev.critical { background: rgba(217,119,106,0.18); color: var(--danger-soft); }
+  .sev.major { background: rgba(201,168,106,0.18); color: var(--gold-bright); }
+  .sev.minor { background: rgba(133,144,168,0.18); color: var(--ink-muted); }
+  .item-body { color: var(--cream-dim); font-size: 16.5px; margin-top: 8px; }
+
+  .good-list { display: grid; gap: 10px; }
+  .good-list .g { display: flex; gap: 12px; align-items: flex-start; color: var(--cream-dim); font-size: 17px; }
+  .good-list .g::before { content: '✦'; color: var(--good); flex: none; margin-top: 2px; }
+
+  /* rewrites */
+  .rw { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--navy-line); }
+  .rw:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .rw-sec { font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+  .rw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .rw-grid { grid-template-columns: 1fr; } }
+  .rw-col { background: rgba(4,9,22,0.4); border: 1px solid var(--navy-line); border-radius: 8px; padding: 16px 18px; }
+  .rw-col.before { border-left: 3px solid var(--danger); }
+  .rw-col.after { border-left: 3px solid var(--good); }
+  .rw-col .lbl { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 8px; }
+  .rw-col .txt { font-size: 16.5px; color: var(--cream); line-height: 1.6; }
+  .rw-col.before .txt { color: var(--cream-dim); font-style: italic; }
+  .rw-why { margin-top: 12px; font-size: 15.5px; color: var(--cream-dim); }
+  .rw-why b { color: var(--gold); font-style: normal; }
+
+  footer { text-align: center; padding: 30px; color: var(--ink-muted); font-size: 13px; font-family: 'Inter', sans-serif; }
+  footer .rule { margin-bottom: 22px; }
+
+  .reset {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--cream-dim); background: transparent;
+    border: 1px solid var(--navy-line); border-radius: 999px;
+    padding: 11px 24px; cursor: pointer; transition: all 0.2s;
+  }
+  .reset:hover { color: var(--cream); border-color: var(--gold-deep); }
+
+  .fade-in { animation: fade 0.7s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="crest">P</div>
+    <h1>Professor <span class="ai">AI</span></h1>
+    <div class="tagline">A world-class business school examiner for your research</div>
+    <div class="rule"></div>
+  </header>
+
+  <!-- ===== INPUT ===== -->
+  <section class="card panel" id="inputPanel">
+    <div class="section-label">Submit your manuscript</div>
+    <div class="tabs">
+      <button class="tab active" data-mode="paste" type="button">Paste Text</button>
+      <button class="tab" data-mode="upload" type="button">Upload PDF</button>
+    </div>
+
+    <div id="pasteArea">
+      <textarea id="paperText" placeholder="Paste your research paper here — in English or Finnish. The Professor reads both. Abstract, body, citations… leave nothing out."></textarea>
+    </div>
+
+    <div id="uploadArea" class="hidden">
+      <div class="dropzone" id="dropzone">
+        <div class="ico">⌸</div>
+        <div class="big">Drop a PDF here, or click to browse</div>
+        <div class="small">Your paper is read directly by the model — PDF only.</div>
+      </div>
+      <input type="file" id="fileInput" accept="application/pdf" class="hidden" />
+      <div class="filechip" id="fileChip">
+        <span>📄</span><span id="fileName"></span><span class="x" id="fileRemove">✕</span>
+      </div>
+    </div>
+
+    <div class="keyrow">
+      <input type="password" id="apiKey" placeholder="Anthropic API key (sk-ant-…) — stored only in your browser" />
+      <button class="reset" id="saveKey" type="button">Save key</button>
+    </div>
+    <div class="keyhint">Calls go directly from your browser to Anthropic using <code>claude-sonnet-4-6</code>. The key is kept in <code>localStorage</code> and never sent anywhere else.</div>
+
+    <div class="actions">
+      <button class="evaluate" id="evaluateBtn" type="button">Evaluate Paper</button>
+    </div>
+    <div class="err hidden" id="errorBox"></div>
+  </section>
+
+  <!-- ===== LOADING ===== -->
+  <section class="card loading hidden" id="loadingPanel">
+    <div class="quill">✒</div>
+    <div class="ln" id="loadingLine">The Professor is reading your work…</div>
+    <div class="sub">Structure · Argument · Methodology · Citations · Originality</div>
+  </section>
+
+  <!-- ===== RESULTS ===== -->
+  <div id="results"></div>
+
+  <footer>
+    <div class="rule"></div>
+    Professor AI · Critique without mercy, guidance without limit.
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const MODEL = "claude-sonnet-4-6";
+  const API_URL = "https://api.anthropic.com/v1/messages";
+
+  // ---- element refs ----
+  const $ = (id) => document.getElementById(id);
+  const tabs = document.querySelectorAll(".tab");
+  const pasteArea = $("pasteArea");
+  const uploadArea = $("uploadArea");
+  const paperText = $("paperText");
+  const dropzone = $("dropzone");
+  const fileInput = $("fileInput");
+  const fileChip = $("fileChip");
+  const fileName = $("fileName");
+  const fileRemove = $("fileRemove");
+  const apiKeyInput = $("apiKey");
+  const saveKeyBtn = $("saveKey");
+  const evaluateBtn = $("evaluateBtn");
+  const errorBox = $("errorBox");
+  const loadingPanel = $("loadingPanel");
+  const loadingLine = $("loadingLine");
+  const inputPanel = $("inputPanel");
+  const results = $("results");
+
+  let mode = "paste";
+  let pdfData = null; // { base64, name }
+
+  // ---- restore key ----
+  const savedKey = localStorage.getItem("profai_key");
+  if (savedKey) apiKeyInput.value = savedKey;
+  saveKeyBtn.addEventListener("click", () => {
+    localStorage.setItem("profai_key", apiKeyInput.value.trim());
+    saveKeyBtn.textContent = "Saved ✓";
+    setTimeout(() => (saveKeyBtn.textContent = "Save key"), 1500);
+  });
+
+  // ---- tab switching ----
+  tabs.forEach((t) => t.addEventListener("click", () => {
+    tabs.forEach((x) => x.classList.remove("active"));
+    t.classList.add("active");
+    mode = t.dataset.mode;
+    pasteArea.classList.toggle("hidden", mode !== "paste");
+    uploadArea.classList.toggle("hidden", mode !== "upload");
+  }));
+
+  // ---- file handling ----
+  dropzone.addEventListener("click", () => fileInput.click());
+  dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("drag"); });
+  dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag"));
+  dropzone.addEventListener("drop", (e) => {
+    e.preventDefault(); dropzone.classList.remove("drag");
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener("change", () => { if (fileInput.files.length) handleFile(fileInput.files[0]); });
+  fileRemove.addEventListener("click", () => {
+    pdfData = null; fileInput.value = ""; fileChip.classList.remove("show"); dropzone.classList.remove("hidden");
+  });
+
+  function handleFile(file) {
+    if (file.type !== "application/pdf") { showError("Please provide a PDF file."); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = String(reader.result).split(",")[1];
+      pdfData = { base64, name: file.name };
+      fileName.textContent = file.name;
+      fileChip.classList.add("show");
+      dropzone.classList.add("hidden");
+      hideError();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ---- error helpers ----
+  function showError(msg) { errorBox.textContent = msg; errorBox.classList.remove("hidden"); }
+  function hideError() { errorBox.classList.add("hidden"); }
+
+  // ---- rotating loading lines ----
+  const lines = [
+    "The Professor is reading your work…",
+    "Weighing the strength of your arguments…",
+    "Scrutinising your methodology…",
+    "Examining citations and sources…",
+    "Assessing originality and contribution…",
+    "Composing the final verdict…",
+  ];
+  let lineTimer = null;
+  function startLoadingLines() {
+    let i = 0;
+    loadingLine.textContent = lines[0];
+    lineTimer = setInterval(() => { i = (i + 1) % lines.length; loadingLine.textContent = lines[i]; }, 2600);
+  }
+  function stopLoadingLines() { if (lineTimer) clearInterval(lineTimer); }
+
+  // ---- prompt + schema ----
+  const SYSTEM_PROMPT = `You are Professor A. R. Hartwell, a famously strict, world-class examiner at an elite business school in the tradition of Harvard Business School. You have supervised hundreds of doctoral theses and reviewed for top-tier journals (AMJ, ASQ, Strategic Management Journal).
+
+You evaluate business research papers with rigorous, uncompromising, but fair academic standards. You do not flatter. You reward genuine rigour, theoretical contribution, and methodological soundness; you penalise vagueness, unsupported claims, weak sampling, missing citations, and derivative thinking.
+
+LANGUAGE: First detect whether the paper is written in Finnish or English. Write EVERY piece of feedback — summary, comments, problems, strengths, and all rewrites — in that SAME language. If the paper is Finnish, respond entirely in Finnish; if English, respond entirely in English.
+
+GRADING (score each 0-100, then it is weighted):
+- Structure & Organization — weight 20
+- Argument Quality — weight 25
+- Research Methodology — weight 25
+- Citations & Sources — weight 15
+- Originality — weight 15
+
+Be a hard marker: an average undergraduate paper should land in the 55-68 range; a strong master's paper 70-82; only genuinely excellent, publishable work earns 85+. Reserve 90+ for exceptional contributions.
+
+For each criterion give a concrete, specific comment grounded in the actual paper. List the real problems and weaknesses you find. List genuine strengths. Then REWRITE 2-4 of the weakest passages: quote (or closely paraphrase) the original, then provide a markedly improved, professor-grade version, and explain why it is better.
+
+Return your evaluation using the required structured JSON format only.`;
+
+  const SCHEMA = {
+    type: "object",
+    properties: {
+      language_detected: { type: "string", enum: ["English", "Finnish"] },
+      paper_title: { type: "string" },
+      summary: { type: "string" },
+      breakdown: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            category: { type: "string", enum: ["Structure & Organization", "Argument Quality", "Research Methodology", "Citations & Sources", "Originality"] },
+            weight: { type: "integer", enum: [15, 20, 25] },
+            score: { type: "integer" },
+            comment: { type: "string" }
+          },
+          required: ["category", "weight", "score", "comment"],
+          additionalProperties: false
+        }
+      },
+      problems: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            severity: { type: "string", enum: ["critical", "major", "minor"] },
+            title: { type: "string" },
+            description: { type: "string" }
+          },
+          required: ["severity", "title", "description"],
+          additionalProperties: false
+        }
+      },
+      strengths: { type: "array", items: { type: "string" } },
+      rewrites: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            section: { type: "string" },
+            original: { type: "string" },
+            improved: { type: "string" },
+            rationale: { type: "string" }
+          },
+          required: ["section", "original", "improved", "rationale"],
+          additionalProperties: false
+        }
+      }
+    },
+    required: ["language_detected", "paper_title", "summary", "breakdown", "problems", "strengths", "rewrites"],
+    additionalProperties: false
+  };
+
+  // ---- evaluate ----
+  evaluateBtn.addEventListener("click", evaluate);
+
+  async function evaluate() {
+    hideError();
+    const key = apiKeyInput.value.trim();
+    if (!key) { showError("Please enter your Anthropic API key."); return; }
+
+    let userContent;
+    if (mode === "paste") {
+      const text = paperText.value.trim();
+      if (text.length < 200) { showError("Please paste a fuller paper (at least a few paragraphs) for a fair evaluation."); return; }
+      userContent = [{ type: "text", text: "Evaluate the following research paper:\n\n" + text }];
+    } else {
+      if (!pdfData) { showError("Please upload a PDF of your paper."); return; }
+      userContent = [
+        { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfData.base64 } },
+        { type: "text", text: "Evaluate the research paper in the attached PDF." }
+      ];
+    }
+
+    localStorage.setItem("profai_key", key);
+    setLoading(true);
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": key,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          max_tokens: 16000,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: "user", content: userContent }],
+          output_config: { format: { type: "json_schema", schema: SCHEMA } }
+        })
+      });
+
+      if (!res.ok) {
+        let detail = "";
+        try { const j = await res.json(); detail = j.error?.message || JSON.stringify(j); } catch (_) { detail = await res.text(); }
+        throw new Error("API error " + res.status + ": " + detail);
+      }
+
+      const data = await res.json();
+      const textBlock = (data.content || []).find((b) => b.type === "text");
+      if (!textBlock) throw new Error("The model returned no analysis. Try again.");
+
+      let evalData;
+      try { evalData = JSON.parse(textBlock.text); }
+      catch (_) { throw new Error("Could not parse the evaluation. Please try again."); }
+
+      setLoading(false);
+      render(evalData);
+    } catch (err) {
+      setLoading(false);
+      showError(err.message || "Something went wrong while contacting the API.");
+      inputPanel.classList.remove("hidden");
+    }
+  }
+
+  function setLoading(on) {
+    if (on) {
+      inputPanel.classList.add("hidden");
+      results.innerHTML = "";
+      loadingPanel.classList.remove("hidden");
+      startLoadingLines();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      loadingPanel.classList.add("hidden");
+      stopLoadingLines();
+    }
+  }
+
+  // ---- letter grade ----
+  function letterGrade(n) {
+    if (n >= 93) return "A · Distinction";
+    if (n >= 87) return "A− · Excellent";
+    if (n >= 83) return "B+ · Strong";
+    if (n >= 77) return "B · Solid";
+    if (n >= 70) return "B− · Competent";
+    if (n >= 63) return "C+ · Adequate";
+    if (n >= 57) return "C · Marginal";
+    if (n >= 50) return "C− · Weak Pass";
+    if (n >= 40) return "D · Fail (revise)";
+    return "F · Reject";
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  }
+
+  // ---- render ----
+  function render(d) {
+    const breakdown = Array.isArray(d.breakdown) ? d.breakdown : [];
+    // compute weighted overall for internal consistency
+    let weighted = 0, totalW = 0;
+    breakdown.forEach((b) => { weighted += (b.score || 0) * (b.weight || 0); totalW += (b.weight || 0); });
+    const overall = totalW ? Math.round(weighted / totalW) : 0;
+
+    const C = 2 * Math.PI * 95; // ring circumference (r=95)
+
+    const breakdownHtml = breakdown.map((b) => `
+      <div class="crit">
+        <div class="crit-top">
+          <span class="crit-name">${esc(b.category)}</span>
+          <span class="crit-weight">${esc(b.weight)}% of grade</span>
+          <span class="crit-score">${esc(b.score)}<span style="font-size:14px;color:var(--cream-dim)">/100</span></span>
+        </div>
+        <div class="bar"><span data-w="${Math.max(0, Math.min(100, b.score || 0))}"></span></div>
+        <div class="crit-note">${esc(b.comment)}</div>
+      </div>`).join("");
+
+    const problems = Array.isArray(d.problems) ? d.problems : [];
+    const problemsHtml = problems.length ? problems.map((p) => `
+      <div class="item prob">
+        <div class="item-head">
+          <span class="sev ${esc(p.severity)}">${esc(p.severity)}</span>
+          <span class="item-title">${esc(p.title)}</span>
+        </div>
+        <div class="item-body">${esc(p.description)}</div>
+      </div>`).join("") : `<div class="crit-note">No significant problems identified.</div>`;
+
+    const strengths = Array.isArray(d.strengths) ? d.strengths : [];
+    const strengthsHtml = strengths.length ? `<div class="good-list">${strengths.map((s) => `<div class="g">${esc(s)}</div>`).join("")}</div>` : `<div class="crit-note">—</div>`;
+
+    const rewrites = Array.isArray(d.rewrites) ? d.rewrites : [];
+    const rewritesHtml = rewrites.map((r) => `
+      <div class="rw">
+        <div class="rw-sec">${esc(r.section)}</div>
+        <div class="rw-grid">
+          <div class="rw-col before"><div class="lbl">As written</div><div class="txt">${esc(r.original)}</div></div>
+          <div class="rw-col after"><div class="lbl">Professor's revision</div><div class="txt">${esc(r.improved)}</div></div>
+        </div>
+        <div class="rw-why"><b>Why it's better — </b>${esc(r.rationale)}</div>
+      </div>`).join("");
+
+    results.innerHTML = `
+      <section class="card scorecard fade-in">
+        <div class="ring-wrap">
+          <svg width="220" height="220" viewBox="0 0 220 220">
+            <defs>
+              <linearGradient id="goldgrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#a8863f"/><stop offset="100%" stop-color="#e3c789"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="110" cy="110" r="95"/>
+            <circle class="ring-fg" id="ringFg" cx="110" cy="110" r="95" stroke-dasharray="${C}" stroke-dashoffset="${C}"/>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-num" id="ringNum">0</div>
+            <div class="ring-den">OUT OF 100</div>
+          </div>
+        </div>
+        <div class="verdict">
+          <div class="lang">${esc(d.language_detected)} · Examined</div>
+          <h2>${esc(d.paper_title || "Final Evaluation")}</h2>
+          <div class="grade-letter">${esc(letterGrade(overall))}</div>
+          <div class="summary">${esc(d.summary)}</div>
+        </div>
+      </section>
+
+      <section class="card block fade-in">
+        <h3><span class="n">I</span> Grading Breakdown</h3>
+        ${breakdownHtml}
+      </section>
+
+      <section class="card block fade-in">
+        <h3><span class="n">II</span> Problems &amp; Weaknesses</h3>
+        ${problemsHtml}
+      </section>
+
+      <section class="card block fade-in">
+        <h3><span class="n">III</span> Genuine Strengths</h3>
+        ${strengthsHtml}
+      </section>
+
+      <section class="card block fade-in">
+        <h3><span class="n">IV</span> Rewritten &amp; Improved Sections</h3>
+        ${rewritesHtml || '<div class="crit-note">—</div>'}
+      </section>
+
+      <div style="text-align:center;margin-top:8px">
+        <button class="reset" id="againBtn" type="button">Evaluate another paper</button>
+      </div>`;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // animate ring + counter
+    const ringFg = $("ringFg");
+    const ringNum = $("ringNum");
+    requestAnimationFrame(() => { ringFg.style.strokeDashoffset = C * (1 - overall / 100); });
+    animateCount(ringNum, overall, 1500);
+
+    // animate breakdown bars
+    setTimeout(() => {
+      document.querySelectorAll(".bar > span").forEach((el) => { el.style.width = el.dataset.w + "%"; });
+    }, 250);
+
+    $("againBtn").addEventListener("click", () => {
+      results.innerHTML = "";
+      inputPanel.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  function animateCount(el, target, dur) {
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(eased * target);
+      if (t < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+})();
+</script>
+</body>
+</html>
