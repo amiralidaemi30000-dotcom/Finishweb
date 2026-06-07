@@ -351,11 +351,11 @@
       </div>
     </div>
 
-    <div class="keyrow">
+    <div class="keyrow" id="keyRow">
       <input type="password" id="apiKey" placeholder="Anthropic API key (sk-ant-…) — stored only in your browser" />
       <button class="reset" id="saveKey" type="button">Save key</button>
     </div>
-    <div class="keyhint">Calls go directly from your browser to Anthropic using <code>claude-sonnet-4-6</code>. The key is kept in <code>localStorage</code> and never sent anywhere else.</div>
+    <div class="keyhint" id="keyHint">Calls go directly from your browser to Anthropic using <code>claude-sonnet-4-6</code>. The key is kept in <code>localStorage</code> and never sent anywhere else.</div>
 
     <div class="actions">
       <button class="evaluate" id="evaluateBtn" type="button">Evaluate Paper</button>
@@ -386,6 +386,13 @@
   const MODEL = "claude-sonnet-4-6";
   const API_URL = "https://api.anthropic.com/v1/messages";
 
+  // ---- HIDDEN-KEY (hosted) MODE ----
+  // Set this to your deployed Cloudflare Worker URL to run without asking
+  // visitors for an API key (the Worker holds the key server-side).
+  // Leave it as "" for bring-your-own-key mode (the standalone file path).
+  const BACKEND_URL = "";
+  const HOSTED = BACKEND_URL.length > 0;
+
   // ---- element refs ----
   const $ = (id) => document.getElementById(id);
   const tabs = document.querySelectorAll(".tab");
@@ -409,7 +416,13 @@
   let mode = "paste";
   let pdfData = null; // { base64, name }
 
-  // ---- restore key ----
+  // ---- hosted mode: hide the API-key UI entirely ----
+  if (HOSTED) {
+    const kr = $("keyRow"); if (kr) kr.classList.add("hidden");
+    const kh = $("keyHint"); if (kh) kh.classList.add("hidden");
+  }
+
+  // ---- restore key (bring-your-own-key mode only) ----
   const savedKey = localStorage.getItem("profai_key");
   if (savedKey) apiKeyInput.value = savedKey;
   saveKeyBtn.addEventListener("click", () => {
@@ -554,7 +567,7 @@ Return your evaluation using the required structured JSON format only.`;
   async function evaluate() {
     hideError();
     const key = apiKeyInput.value.trim();
-    if (!key) { showError("Please enter your Anthropic API key."); return; }
+    if (!HOSTED && !key) { showError("Please enter your Anthropic API key."); return; }
 
     let userContent;
     if (mode === "paste") {
@@ -569,25 +582,34 @@ Return your evaluation using the required structured JSON format only.`;
       ];
     }
 
-    localStorage.setItem("profai_key", key);
+    if (!HOSTED) localStorage.setItem("profai_key", key);
     setLoading(true);
 
     try {
-      const res = await fetch(API_URL, {
+      const requestBody = {
+        model: MODEL,
+        max_tokens: 16000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: "user", content: userContent }],
+        output_config: { format: { type: "json_schema", schema: SCHEMA } }
+      };
+
+      // Hosted mode → call our Worker (no key in the browser).
+      // BYO mode  → call Anthropic directly with the visitor's key.
+      const endpoint = HOSTED ? BACKEND_URL : API_URL;
+      const headers = HOSTED
+        ? { "content-type": "application/json" }
+        : {
+            "content-type": "application/json",
+            "x-api-key": key,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-access": "true"
+          };
+
+      const res = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-api-key": key,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true"
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          max_tokens: 16000,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: userContent }],
-          output_config: { format: { type: "json_schema", schema: SCHEMA } }
-        })
+        headers,
+        body: JSON.stringify(requestBody)
       });
 
       if (!res.ok) {
