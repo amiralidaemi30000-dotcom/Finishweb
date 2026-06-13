@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Send, Phone, Video, Lock, Unlock } from 'lucide-react'
+import { ArrowRight, Send, Phone, Video, Lock } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { supabase } from '../lib/supabase'
 import { loadMessages, sendMessage, loadConversationContext } from '../lib/api'
@@ -21,7 +21,7 @@ export default function Conversation() {
   const [sending, setSending] = useState(false)
   const [focused, setFocused] = useState(false)
   const [othersTyping, setOthersTyping] = useState(false)
-  const [locked, setLocked] = useState(false) // drives the unlock→lock intro
+  const [ripple, setRipple] = useState(0)
   const channelRef = useRef(null)
   const endRef = useRef(null)
   const typingTimeout = useRef()
@@ -29,12 +29,6 @@ export default function Conversation() {
   const scrollToBottom = useCallback((smooth = true) => {
     requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' }))
   }, [])
-
-  // Intro: lock clicks shut after a beat.
-  useEffect(() => {
-    const t = setTimeout(() => setLocked(true), 480)
-    return () => clearTimeout(t)
-  }, [conversationId])
 
   useEffect(() => {
     let active = true
@@ -57,7 +51,6 @@ export default function Conversation() {
     }
   }, [conversationId, user.id, scrollToBottom])
 
-  // Realtime: new messages + live typing presence via broadcast.
   useEffect(() => {
     const channel = supabase
       .channel(`conv-${conversationId}`, { config: { broadcast: { self: false } } })
@@ -95,6 +88,7 @@ export default function Conversation() {
     if (!content || sending) return
     setDraft('')
     setSending(true)
+    setRipple((r) => r + 1) // gold ripple from send button
 
     const tempId = `temp-${Date.now()}`
     setMessages((prev) => [
@@ -119,72 +113,49 @@ export default function Conversation() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 30 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 30 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      initial={{ opacity: 0, rotateX: -12, scaleY: 0.94 }}
+      animate={{ opacity: 1, rotateX: 0, scaleY: 1 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      style={{ transformOrigin: 'top', transformPerspective: 1200 }}
       className="flex h-full flex-col"
     >
-      {/* Header (no motion — navigation chrome) */}
-      <header className="glass-strong z-20 flex items-center gap-3 px-3 py-3">
-        <button
-          onClick={() => navigate('/')}
-          className="rounded-full p-2 text-cream/70 transition hover:bg-cream/5 active:scale-90"
-          aria-label="بازگشت"
-        >
+      {/* Header — glass blur, faint gold hairline */}
+      <header className="z-20 flex items-center gap-3 border-b border-gold/[0.08] bg-lapis/[0.18] px-3 py-3 backdrop-blur-2xl">
+        <button onClick={() => navigate('/')} className="rounded-full p-2 text-pearl/70 transition hover:bg-pearl/5 active:scale-90" aria-label="بازگشت">
           <ArrowRight size={22} />
         </button>
         <Avatar name={title} src={other?.avatar_url} size={42} online />
         <div className="min-w-0 flex-1">
-          <p className="truncate font-fa text-[15px] font-semibold text-cream">{title}</p>
+          <p className="truncate font-fa text-[15px] font-semibold text-pearl">{title}</p>
           <p className="font-fa text-[12px] text-trust/90">{othersTyping ? 'در حال نوشتن…' : 'آنلاین'}</p>
         </div>
-        <button className="rounded-full p-2 text-cream/50 transition hover:bg-cream/5" aria-label="تماس صوتی">
-          <Phone size={19} />
-        </button>
-        <button className="rounded-full p-2 text-cream/50 transition hover:bg-cream/5" aria-label="تماس تصویری">
-          <Video size={19} />
-        </button>
+        <button className="rounded-full p-2 text-pearl/50 transition hover:bg-pearl/5" aria-label="تماس صوتی"><Phone size={19} /></button>
+        <button className="rounded-full p-2 text-pearl/50 transition hover:bg-pearl/5" aria-label="تماس تصویری"><Video size={19} /></button>
       </header>
 
-      {/* Messages over a faint Persian geometric pattern */}
+      {/* Messages over the mosque pattern, with a soft lapis vignette */}
       <div className="relative flex-1 overflow-hidden">
-        <div className="persian-grid pointer-events-none absolute inset-0 opacity-60" />
+        <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_120px_30px_rgba(8,11,20,0.9)]" />
         <div className="relative h-full space-y-1.5 overflow-y-auto px-4 py-4">
-          {/* Encryption indicator with unlock→lock intro */}
+          {/* permanent encryption indicator */}
           <div className="mb-3 flex justify-center">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-trust/30 bg-trust/10 px-3 py-1.5">
-              <AnimatePresence mode="wait" initial={false}>
-                {locked ? (
-                  <motion.span
-                    key="locked"
-                    initial={{ scale: 0.6, rotate: -12 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 16 }}
-                  >
-                    <Lock size={13} className="text-trust" />
-                  </motion.span>
-                ) : (
-                  <motion.span key="unlocked" exit={{ opacity: 0 }}>
-                    <Unlock size={13} className="text-trust" />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-              <span className="font-fa text-[12px] text-trust">این مکالمه رمزگذاری شده است</span>
+            <div className="relative inline-flex items-center gap-1.5 rounded-full border border-trust/30 bg-lapis/20 px-3 py-1.5">
+              <span className="absolute -inset-1 rounded-full bg-trust/15 blur-md" />
+              <Lock size={12} className="relative text-gold" />
+              <span className="relative font-fa text-[11px] text-trust">این مکالمه رمزگذاری شده است</span>
             </div>
           </div>
 
           {loading ? (
             <div className="space-y-3 pt-4">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className={`h-9 animate-pulse rounded-2xl bg-cream/[0.04] ${i % 2 ? 'ms-auto w-1/2' : 'w-2/3'}`} />
+                <div key={i} className={`skeleton h-10 rounded-2xl ${i % 2 ? 'ms-auto w-1/2' : 'w-2/3'}`} style={{ animationDelay: `${i * 0.12}s` }} />
               ))}
             </div>
           ) : messages.length === 0 ? (
             <div className="flex h-3/4 flex-col items-center justify-center text-center">
-              <div className="glass rounded-2xl px-5 py-3 font-fa text-sm text-cream/55">
-                این ابتدای گفتگوی شماست. سلام کنید 👋
-              </div>
+              <div className="glass rounded-2xl px-5 py-3 font-fa text-sm text-pearl/55">این ابتدای گفتگوی شماست. سلام کنید 👋</div>
             </div>
           ) : (
             <AnimatePresence initial={false}>
@@ -195,27 +166,18 @@ export default function Conversation() {
                 return (
                   <motion.div
                     key={m.id}
-                    initial={mine ? { opacity: 0, scale: 0.8 } : { opacity: 0, x: -24 }}
+                    initial={mine ? { opacity: 0, scale: 0.85 } : { opacity: 0, x: -24, scale: 0.92 }}
                     animate={{ opacity: 1, scale: 1, x: 0 }}
-                    transition={
-                      mine
-                        ? { type: 'spring', stiffness: 520, damping: 20, duration: 0.2 }
-                        : { duration: 0.25, ease: 'easeOut' }
-                    }
+                    transition={{ type: 'spring', stiffness: 480, damping: 22 }}
                     className={`flex ${mine ? 'justify-start' : 'justify-end'}`}
                   >
                     <div
-                      className={`max-w-[78%] px-3.5 py-2 font-fa text-[14px] leading-6 ${
-                        mine
-                          ? 'grad-saffron-rose rounded-2xl rounded-bl-md text-cream shadow-glow-saffron'
-                          : 'glass rounded-2xl rounded-br-md text-cream/90'
+                      className={`max-w-[78%] px-3.5 py-2 font-fa text-[14px] leading-6 text-pearl ${
+                        mine ? 'bubble-sent' : 'bubble-received'
                       } ${grouped ? 'mt-0.5' : 'mt-2'} ${m.pending ? 'opacity-70' : ''}`}
                     >
                       <span className="whitespace-pre-wrap break-words">{m.content}</span>
-                      <span
-                        className={`mr-2 inline-block translate-y-0.5 text-[10px] ${mine ? 'text-cream/70' : 'text-cream/35'}`}
-                        dir="ltr"
-                      >
+                      <span className={`mr-2 inline-block translate-y-0.5 text-[10px] ${mine ? 'text-pearl/65' : 'text-pearl/35'}`} dir="ltr">
                         {formatTime(m.created_at)}
                       </span>
                     </div>
@@ -225,22 +187,13 @@ export default function Conversation() {
             </AnimatePresence>
           )}
 
-          {/* Breathing typing indicator */}
+          {/* breathing gold typing dots */}
           <AnimatePresence>
             {othersTyping && (
-              <motion.div
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0 }}
-                className="flex justify-end"
-              >
-                <div className="glass mt-2 flex items-center gap-1.5 rounded-2xl rounded-br-md px-4 py-3">
+              <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="flex justify-end">
+                <div className="bubble-received mt-2 flex items-center gap-1.5 px-4 py-3">
                   {[0, 1, 2].map((i) => (
-                    <span
-                      key={i}
-                      className="h-2 w-2 rounded-full bg-cream/70 animate-breathe"
-                      style={{ animationDelay: `${i * 0.2}s` }}
-                    />
+                    <span key={i} className="h-2 w-2 rounded-full bg-gold animate-breathe" style={{ animationDelay: `${i * 0.2}s` }} />
                   ))}
                 </div>
               </motion.div>
@@ -251,15 +204,15 @@ export default function Conversation() {
         </div>
       </div>
 
-      {/* Composer — glowing border when typing */}
-      <form onSubmit={handleSend} className="glass-strong z-20 flex items-center gap-2 px-3 py-3">
+      {/* Composer */}
+      <form onSubmit={handleSend} className="z-20 flex items-center gap-2 border-t border-gold/[0.08] bg-lapis/[0.18] px-3 py-3 backdrop-blur-2xl">
         <input
           value={draft}
           onChange={onDraftChange}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className={`w-full rounded-2xl border bg-cream/[0.05] px-4 py-3 font-fa text-[15px] text-cream placeholder-cream/35 outline-none transition ${
-            focused ? 'border-saffron/60 shadow-glow-saffron' : 'border-cream/10'
+          className={`w-full rounded-2xl border bg-lapis/20 px-4 py-3 font-fa text-[15px] text-pearl placeholder-pearl/40 outline-none transition ${
+            focused ? 'border-gold/60 shadow-glow-gold' : 'border-gold/20'
           }`}
           placeholder="پیام بنویسید…"
           dir="auto"
@@ -268,10 +221,22 @@ export default function Conversation() {
           type="submit"
           disabled={!draft.trim()}
           whileTap={{ scale: 0.9 }}
-          className="grad-saffron-rose flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-cream shadow-glow-saffron transition disabled:opacity-40"
+          className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gold shadow-glow-gold transition disabled:opacity-40"
           aria-label="ارسال"
         >
-          <Send size={20} className="-scale-x-100" />
+          {/* gold ripple from center on press */}
+          <AnimatePresence>
+            {ripple > 0 && (
+              <motion.span
+                key={ripple}
+                initial={{ scale: 0, opacity: 0.6 }}
+                animate={{ scale: 3, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="absolute h-8 w-8 rounded-full bg-goldglow"
+              />
+            )}
+          </AnimatePresence>
+          <Send size={20} className="relative -scale-x-100 text-base" />
         </motion.button>
       </form>
     </motion.div>

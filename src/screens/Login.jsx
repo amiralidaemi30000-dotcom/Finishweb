@@ -6,7 +6,12 @@ import { Logo, Wordmark } from '../components/Brand'
 import { HERO_BG } from '../lib/assets'
 
 const tap = { scale: 0.95 }
-const spring = { type: 'spring', stiffness: 500, damping: 18 }
+const page = {
+  initial: { opacity: 0, scale: 0.97 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.97 },
+  transition: { duration: 0.25, ease: 'easeOut' },
+}
 
 export default function Login() {
   const { signIn, signUp } = useAuth()
@@ -52,13 +57,12 @@ export default function Login() {
   }
 
   return (
-    <div className="relative flex h-full flex-col overflow-y-auto px-7 pb-10 pt-16">
-      {/* Higgsfield hero, warm and dimmed behind the glass */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-45"
-        style={{ backgroundImage: `url(${HERO_BG})` }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/70 to-ink" />
+    <motion.div {...page} className="relative flex h-full flex-col overflow-y-auto px-7 pb-10 pt-16">
+      {/* Higgsfield mosque ceiling, dimmed — real lapis + gold tilework */}
+      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url(${HERO_BG})` }} />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-base/50 via-base/75 to-base" />
+      {/* soft lapis glow from the top, like light through a mosque dome */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-lapis/30 to-transparent" />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -66,16 +70,15 @@ export default function Login() {
         transition={{ duration: 0.5 }}
         className="relative z-10 flex flex-col items-center text-center"
       >
-        <div className="drop-shadow-[0_8px_30px_rgba(201,121,42,0.45)]">
+        <div className="drop-shadow-[0_8px_30px_rgba(212,175,55,0.4)]">
           <Logo size={68} />
         </div>
         <Wordmark shimmer className="mt-5 text-4xl" />
-        <p className="mt-3 font-fa text-[15px] leading-7 text-cream/60">
-          پیام‌رسانی که با عشق ساخته شده
+        <p className="mt-3 font-fa text-[15px] leading-7 text-pearl/60">
+          فضای امن توست
           <br />
-          <span className="text-cream/35">A messenger built with real love.</span>
+          <span className="text-pearl/35">A private space, built for you.</span>
         </p>
-        {/* trust line */}
         <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-trust/30 bg-trust/10 px-3 py-1">
           <ShieldCheck size={14} className="text-trust" />
           <span className="font-fa text-[12px] text-trust">رمزگذاری سرتاسری</span>
@@ -89,13 +92,9 @@ export default function Login() {
         transition={{ duration: 0.5, delay: 0.15 }}
         className="glass-strong relative z-10 mt-8 rounded-3xl p-6 shadow-glass"
       >
-        <div className="mb-5 flex gap-1 rounded-2xl bg-cream/[0.04] p-1">
-          <TabButton active={!isSignup} onClick={() => setMode('signin')}>
-            ورود
-          </TabButton>
-          <TabButton active={isSignup} onClick={() => setMode('signup')}>
-            ثبت‌نام
-          </TabButton>
+        <div className="mb-5 flex gap-1 rounded-2xl bg-base/40 p-1">
+          <TabButton active={!isSignup} onClick={() => setMode('signin')}>ورود</TabButton>
+          <TabButton active={isSignup} onClick={() => setMode('signup')}>ثبت‌نام</TabButton>
         </div>
 
         <div className="space-y-3">
@@ -136,36 +135,35 @@ export default function Login() {
           </Field>
         </div>
 
-        {error && <p className="mt-3 font-fa text-[13px] leading-6 text-rose-soft">{error}</p>}
+        {error && <p className="mt-3 font-fa text-[13px] leading-6 text-crimson">{error}</p>}
         {info && <p className="mt-3 font-fa text-[13px] leading-6 text-trust/90">{info}</p>}
 
         <motion.button
           type="submit"
           disabled={busy}
           whileTap={tap}
-          transition={spring}
-          className="btn-primary mt-5 flex items-center justify-center gap-2 font-fa"
+          className="btn-gold mt-5 flex items-center justify-center gap-2 font-fa text-base"
         >
           {busy && <Loader2 size={18} className="animate-spin" />}
-          {isSignup ? 'ساختن حساب' : 'ورود به هامیک'}
+          <span className="text-base">{isSignup ? 'ساختن حساب' : 'ورود به هامیک'}</span>
         </motion.button>
 
-        <p className="mt-4 text-center font-fa text-[13px] text-cream/40">
+        <p className="mt-4 text-center font-fa text-[13px] text-pearl/40">
           {isSignup ? 'قبلاً حساب دارید؟ ' : 'حساب ندارید؟ '}
           <button
             type="button"
             onClick={() => setMode(isSignup ? 'signin' : 'signup')}
-            className="font-semibold text-saffron"
+            className="font-semibold text-gold"
           >
             {isSignup ? 'وارد شوید' : 'بسازید'}
           </button>
         </p>
       </motion.form>
 
-      <p className="relative z-10 mt-8 text-center font-fa text-[12px] text-cream/25">
+      <p className="relative z-10 mt-8 text-center font-fa text-[12px] text-pearl/25">
         ساخته‌شده در فنلاند، برای هر ایرانی · Built for the Iranian diaspora
       </p>
-    </div>
+    </motion.div>
   )
 }
 
@@ -175,15 +173,10 @@ function TabButton({ active, children, onClick }) {
       type="button"
       onClick={onClick}
       className={`relative flex-1 rounded-xl py-2.5 font-fa text-sm font-semibold transition ${
-        active ? 'text-cream' : 'text-cream/40'
+        active ? 'text-base' : 'text-pearl/45'
       }`}
     >
-      {active && (
-        <motion.span
-          layoutId="tab-pill"
-          className="absolute inset-0 rounded-xl bg-gradient-to-l from-saffron to-rose shadow-glow-saffron"
-        />
-      )}
+      {active && <motion.span layoutId="tab-pill" className="absolute inset-0 rounded-xl bg-gold shadow-glow-gold" />}
       <span className="relative z-10">{children}</span>
     </button>
   )
@@ -192,7 +185,7 @@ function TabButton({ active, children, onClick }) {
 function Field({ icon: Icon, children }) {
   return (
     <div className="relative">
-      <Icon size={18} className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-cream/35" />
+      <Icon size={18} className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-pearl/40" />
       {children}
     </div>
   )

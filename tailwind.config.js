@@ -4,43 +4,40 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: '#0D0A0E',          // deep warm Persian night
-        'ink-soft': '#1A1216',   // raised warm surface
-        saffron: '#C9792A',      // زعفران — primary
-        primary: '#C9792A',      // alias so existing classes read saffron
-        rose: '#8B1A4A',         // رنگ گل — deep rose secondary
-        'rose-soft': '#C77FA0',  // muted rose for secondary text
-        cream: '#F5EFE6',        // warm cream text (never cold white)
-        trust: '#2ECC71',        // encryption / security only
-        gold: '#F0B429',         // premium moments only
+        base: '#080B14',        // deepest midnight
+        ink: '#080B14',         // alias
+        lapis: '#1A3A6B',       // Persian mosque blue
+        lapisL: '#2952A3',      // royal blue glow
+        gold: '#D4AF37',        // real gold
+        goldglow: '#F0D060',    // shimmer only
+        pearl: '#F0EBE1',       // warm ivory text
+        crimson: '#7B1C1C',     // alerts only
+        trust: '#1DB954',       // encryption green
       },
       fontFamily: {
         sans: ['Inter', 'Vazirmatn', 'system-ui', 'sans-serif'],
         fa: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        glass: '0 8px 32px rgba(0, 0, 0, 0.45)',
-        'glow-saffron': '0 6px 22px rgba(201, 121, 42, 0.40)',
-        'glow-rose': '0 6px 22px rgba(139, 26, 74, 0.40)',
-        'glow-gold': '0 0 28px rgba(240, 180, 41, 0.45)',
+        glass: '0 8px 32px rgba(0, 0, 0, 0.5)',
+        sent: '0 4px 20px rgba(26, 58, 107, 0.5)',
+        'glow-gold': '0 0 30px rgba(212, 175, 55, 0.30)',
+        'glow-lapis': '0 0 28px rgba(41, 82, 163, 0.35)',
       },
       keyframes: {
-        // breathing typing dots — like a slow heartbeat
-        breathe: {
-          '0%, 100%': { opacity: '0.25', transform: 'translateY(0)' },
-          '50%': { opacity: '1', transform: 'translateY(-2px)' },
-        },
-        // slow saffron→rose ring rotation behind online avatars
+        // candlelight on a mosque tile — gold sweep
+        candle: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
+        // breathing typing dots — a slow heartbeat
+        breathe: { '0%, 100%': { transform: 'scale(0.6)', opacity: '0.4' }, '50%': { transform: 'scale(1)', opacity: '1' } },
         spinSlow: { to: { transform: 'rotate(360deg)' } },
-        shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
+        // skeleton shimmer, right→left for RTL
+        skeleton: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '-200% 0' } },
       },
       animation: {
+        candle: 'candle 4s linear infinite',
         breathe: 'breathe 1.4s ease-in-out infinite',
         'spin-slow': 'spinSlow 3s linear infinite',
-        shimmer: 'shimmer 4s linear infinite',
+        skeleton: 'skeleton 1.8s linear infinite',
       },
     },
   },

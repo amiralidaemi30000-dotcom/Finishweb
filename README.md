@@ -24,27 +24,34 @@ subscriptions, and email/password auth.
 - **Optimistic sending** — bubbles appear instantly, reconcile on save.
 - **Security** — every table is guarded by RLS; clients only ever see their own data.
 
-## 🎨 Design — "with soul" (v2)
+## 🎨 Design — "Persian Lapis Gold" (v3)
 
-A distinctly **Persian** palette — warm, not cold.
+Lapis lazuli and real gold — the blue of the Shah Mosque in Isfahan, the Sheikh Lotfollah tiles,
+on deepest midnight. Technology, classic, and massive at once.
 
 | | |
 |---|---|
-| Background | `#0D0A0E` deep warm Persian night |
-| Primary | `#C9792A` saffron (زعفران) |
-| Secondary | `#8B1A4A` deep rose (رنگ گل) |
-| Text | `#F5EFE6` warm cream |
-| Encryption | `#2ECC71` trust green (security indicators only) |
-| Premium | `#F0B429` gold (rare moments) |
+| Base | `#080B14` deepest midnight |
+| Lapis | `#1A3A6B` Persian mosque blue |
+| Royal glow | `#2952A3` |
+| Gold | `#D4AF37` real gold |
+| Text | `#F0EBE1` warm pearl |
+| Encryption | `#1DB954` trust green |
+| Alerts | `#7B1C1C` crimson |
 
-Glassmorphism cards, saffron→rose gradients, a green end-to-end-encryption lock at the top of
-every chat, gold-shimmer wordmark, rotating saffron ring on online avatars, and a faint Persian
-geometric backdrop. Hero + icon generated with Higgsfield.
+A faint **eight-pointed-star (Khatam) mosaic** runs wall-to-wall at ~5% — infinite depth, like
+standing inside an Iranian mosque. Lapis glass cards with barely-gold borders, gold unread badges,
+a permanent gold-lock encryption indicator on every chat, and a mosque-ceiling hero generated with
+Higgsfield.
 
-**Motion system** (Framer Motion — interaction only, ~30% of moments): page slide+fade,
-sent bubbles scale-bounce, received bubbles slide in from the left, button press scale-down,
-spring-physics list items, an unlock→lock intro on opening a chat, and a breathing typing
-indicator driven by **live Supabase broadcast** (real "is typing" presence, not faked).
+**Bubbles:** sent are lapis with a slow **gold candlelight sweep** along the top edge; received are
+near-invisible pearl frosted glass.
+
+**Motion (Framer Motion, interaction only):** an app-open **splash where هامیک writes itself** in
+gold calligraphy; bubbles bloom on send with a **gold ripple** from the send button; received
+messages slide in from the left; a chat **unfolds like a letter** on open; page transitions
+fade+scale; **breathing** gold typing dots driven by **live Supabase broadcast** (real presence,
+not faked); skeleton shimmer (right→left) instead of spinners.
 
 ## 🧱 Stack
 

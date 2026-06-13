@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, LogOut, Check, Loader2, Shield, Bell, Palette, Globe, AtSign } from 'lucide-react'
+import { ArrowRight, LogOut, Check, Shield, Bell, Palette, Globe, AtSign } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { supabase } from '../lib/supabase'
 import Avatar from '../components/Avatar'
 
 const faNum = (n) => new Intl.NumberFormat('fa-IR').format(n ?? 0)
+const page = {
+  initial: { opacity: 0, scale: 0.97 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.97 },
+  transition: { duration: 0.25, ease: 'easeOut' },
+}
 
 export default function Profile() {
   const { user, profile, refreshProfile, signOut } = useAuth()
@@ -51,82 +57,56 @@ export default function Profile() {
     : '۱۴۰۴'
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 30 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 30 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="flex h-full flex-col overflow-y-auto"
-    >
-      {/* Gradient banner (no motion — it's chrome) */}
-      <div className="relative h-44 shrink-0 bg-gradient-to-b from-saffron to-rose">
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gold/25 blur-2xl" />
-        <button
-          onClick={() => navigate('/')}
-          className="absolute end-3 top-5 rounded-full p-2 text-cream/90 transition hover:bg-black/10 active:scale-90"
-          aria-label="بازگشت"
-        >
+    <motion.div {...page} className="flex h-full flex-col overflow-y-auto">
+      {/* lapis banner: dark → lapis → dark, gold hairline base */}
+      <div className="relative h-36 shrink-0 bg-gradient-to-l from-base via-lapis to-base">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gold/30" />
+        <button onClick={() => navigate('/')} className="absolute end-3 top-5 rounded-full p-2 text-pearl/90 transition hover:bg-black/20 active:scale-90" aria-label="بازگشت">
           <ArrowRight size={22} />
         </button>
       </div>
 
-      <div className="-mt-14 px-5 pb-12">
-        {/* Glowing avatar — gentle zoom on tap */}
+      <div className="-mt-12 px-5 pb-12">
         <div className="flex flex-col items-center">
-          <motion.div whileTap={{ scale: 1.06 }} transition={{ type: 'spring', stiffness: 300, damping: 15 }}>
-            <Avatar name={name || user.email} src={profile?.avatar_url} size={108} ring />
+          <motion.div whileTap={{ scale: 1.06 }} transition={{ type: 'spring', stiffness: 300, damping: 15 }} className="drop-shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+            <Avatar name={name || user.email} src={profile?.avatar_url} size={90} ring />
           </motion.div>
-          <p className="mt-3 font-fa text-xl font-bold text-cream">{name || 'کاربر هامیک'}</p>
-          <p className="mt-1 font-fa text-[14px] text-rose-soft" dir="ltr">
-            @{username || 'hamik'}
-          </p>
+          <p className="mt-3 font-fa text-[22px] font-bold text-gold">{name || 'کاربر هامیک'}</p>
+          <p className="mt-1 font-fa text-[14px] text-pearl/60" dir="ltr">@{username || 'hamik'}</p>
         </div>
 
-        {/* Real stats */}
-        <div className="glass mt-5 grid grid-cols-3 rounded-2xl py-3">
-          <Stat value={faNum(stats.messages)} label="پیام" divider />
-          <Stat value={faNum(stats.connections)} label="ارتباط" divider />
+        {/* real stats */}
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          <Stat value={faNum(stats.messages)} label="پیام" />
+          <Stat value={faNum(stats.connections)} label="مخاطب" />
           <Stat value={joinYear} label="عضویت" />
         </div>
 
-        {/* Editable fields */}
         <div className="mt-6 space-y-4">
           <Labeled label="نام نمایشی">
             <input className="input-glass font-fa" value={name} onChange={(e) => setName(e.target.value)} />
           </Labeled>
           <Labeled label="نام کاربری">
             <div className="relative">
-              <AtSign size={17} className="absolute start-3.5 top-1/2 -translate-y-1/2 text-cream/35" />
+              <AtSign size={17} className="absolute start-3.5 top-1/2 -translate-y-1/2 text-pearl/40" />
               <input dir="ltr" className="input-glass ps-11 text-start" value={username} onChange={(e) => setUsername(e.target.value)} />
             </div>
           </Labeled>
           <Labeled label="درباره من">
-            <textarea
-              rows={3}
-              className="input-glass resize-none font-fa"
-              placeholder="چند کلمه درباره خودتان…"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-            />
+            <textarea rows={3} className="input-glass resize-none font-fa" placeholder="چند کلمه درباره خودتان…" value={bio} onChange={(e) => setBio(e.target.value)} />
           </Labeled>
 
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={save}
-            disabled={saving}
-            className="btn-primary flex items-center justify-center gap-2 font-fa"
-          >
-            {saving ? <Loader2 size={18} className="animate-spin" /> : saved ? <Check size={18} /> : null}
-            {saved ? 'ذخیره شد' : 'ذخیره تغییرات'}
+          <motion.button whileTap={{ scale: 0.95 }} onClick={save} disabled={saving} className="btn-gold flex items-center justify-center gap-2 font-fa text-base">
+            {saved && <Check size={18} className="text-base" />}
+            <span className="text-base">{saving ? 'در حال ذخیره…' : saved ? 'ذخیره شد' : 'ذخیره تغییرات'}</span>
           </motion.button>
         </div>
 
-        {/* Settings as glass cards */}
         <div className="mt-7 space-y-2.5">
-          <SettingCard icon={Shield} color="text-trust" bg="bg-trust/15" label="حریم خصوصی و امنیت" hint="رمزگذاری سرتاسری" />
-          <SettingCard icon={Bell} color="text-saffron" bg="bg-saffron/15" label="اعلان‌ها" />
-          <SettingCard icon={Palette} color="text-gold" bg="bg-gold/15" label="ظاهر و تم" hint="تیره" />
-          <SettingCard icon={Globe} color="text-rose-soft" bg="bg-rose/25" label="زبان" hint="فارسی" />
+          <SettingCard icon={Shield} dot="bg-trust" label="حریم خصوصی و امنیت" hint="رمزگذاری سرتاسری" />
+          <SettingCard icon={Bell} dot="bg-gold" label="اعلان‌ها" />
+          <SettingCard icon={Palette} dot="bg-gold" label="ظاهر و تم" hint="لاجورد و طلا" />
+          <SettingCard icon={Globe} dot="bg-trust" label="زبان" hint="فارسی" />
         </div>
 
         <motion.button
@@ -135,25 +115,23 @@ export default function Profile() {
             await signOut()
             navigate('/login', { replace: true })
           }}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-l from-rose to-[#5E1234] py-3.5 font-fa font-semibold text-cream shadow-glow-rose"
+          className="group mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-crimson/60 bg-crimson/30 py-3.5 font-fa font-semibold text-pearl transition hover:bg-crimson"
         >
           <LogOut size={18} />
           خروج از حساب
         </motion.button>
 
-        <p className="mt-8 text-center font-fa text-[12px] text-cream/25">
-          HAMIK · نسخه ۲.۰ · ساخته‌شده با ❤️ برای ایرانیان
-        </p>
+        <p className="mt-8 text-center font-fa text-[12px] text-pearl/25">HAMIK · نسخه ۳.۰ · لاجورد و طلا</p>
       </div>
     </motion.div>
   )
 }
 
-function Stat({ value, label, divider }) {
+function Stat({ value, label }) {
   return (
-    <div className={`flex flex-col items-center ${divider ? 'border-e border-cream/10' : ''}`}>
-      <span className="font-fa text-lg font-bold text-saffron">{value}</span>
-      <span className="font-fa text-[12px] text-cream/55">{label}</span>
+    <div className="glass flex flex-col items-center rounded-[14px] py-3">
+      <span className="font-fa text-lg font-bold text-gold">{value}</span>
+      <span className="font-fa text-[12px] text-pearl/50">{label}</span>
     </div>
   )
 }
@@ -161,23 +139,19 @@ function Stat({ value, label, divider }) {
 function Labeled({ label, children }) {
   return (
     <div>
-      <label className="mb-1.5 block font-fa text-[13px] text-cream/45">{label}</label>
+      <label className="mb-1.5 block font-fa text-[13px] text-pearl/45">{label}</label>
       {children}
     </div>
   )
 }
 
-function SettingCard({ icon: Icon, color, bg, label, hint }) {
+function SettingCard({ icon: Icon, dot, label, hint }) {
   return (
-    <motion.button
-      whileTap={{ scale: 0.98 }}
-      className="glass flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-start transition hover:bg-cream/[0.08]"
-    >
-      <span className={`flex h-9 w-9 items-center justify-center rounded-full ${bg}`}>
-        <Icon size={18} className={color} />
-      </span>
-      <span className="flex-1 font-fa text-[14px] text-cream/90">{label}</span>
-      {hint && <span className="font-fa text-[12px] text-cream/35">{hint}</span>}
+    <motion.button whileTap={{ scale: 0.98 }} className="glass flex w-full items-center gap-3 rounded-[14px] px-4 py-3.5 text-start transition hover:bg-lapis/25">
+      <span className={`h-2 w-2 rounded-full ${dot}`} />
+      <Icon size={18} className="text-pearl/70" />
+      <span className="flex-1 font-fa text-[14px] text-pearl/90">{label}</span>
+      {hint && <span className="font-fa text-[12px] text-pearl/35">{hint}</span>}
     </motion.button>
   )
 }
