@@ -18,15 +18,14 @@ body,
 
 body {
   margin: 0;
-  background-color: #0a0e1a;
-  color: #fff;
+  background-color: #0d0a0e;
+  color: #f5efe6; /* warm cream, never cold white */
   font-family: 'Inter', 'Vazirmatn', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overscroll-behavior: none;
 }
 
-/* Persian text uses Vazirmatn automatically */
 [dir='rtl'],
 .font-fa {
   font-family: 'Vazirmatn', 'Inter', system-ui, sans-serif;
@@ -34,57 +33,79 @@ body {
 
 @layer components {
   .glass {
-    @apply bg-white/[0.04] backdrop-blur-xl border border-white/[0.08];
+    @apply border border-cream/[0.10] bg-cream/[0.06] backdrop-blur-xl;
   }
   .glass-strong {
-    @apply bg-white/[0.07] backdrop-blur-2xl border border-white/[0.10];
+    @apply border border-cream/[0.12] bg-cream/[0.08] backdrop-blur-2xl;
   }
   .input-glass {
-    @apply w-full rounded-2xl bg-white/[0.05] border border-white/10 px-4 py-3.5
-           text-[15px] text-white placeholder-white/35 outline-none transition
-           focus:border-primary/60 focus:bg-white/[0.07] focus:shadow-glow;
+    @apply w-full rounded-2xl border border-cream/10 bg-cream/[0.05] px-4 py-3.5
+           text-[15px] text-cream placeholder-cream/35 outline-none transition
+           focus:border-saffron/55 focus:bg-cream/[0.07] focus:shadow-glow-saffron;
   }
+  /* saffron → rose, the signature HAMIK gradient */
   .btn-primary {
-    @apply w-full rounded-2xl bg-gradient-to-l from-primary to-[#6FA3FF] py-3.5 font-semibold
-           text-white shadow-glow transition active:scale-[0.98] disabled:opacity-50
-           disabled:active:scale-100;
+    @apply w-full rounded-2xl bg-gradient-to-l from-saffron to-rose py-3.5 font-semibold
+           text-cream shadow-glow-saffron transition active:scale-[0.98]
+           disabled:opacity-50 disabled:active:scale-100;
+  }
+  .grad-saffron-rose {
+    @apply bg-gradient-to-l from-saffron to-rose;
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar — warm */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(201, 121, 42, 0.25);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Ambient aurora glows used on auth + empty states */
+/* Warm ambient aurora (auth + empty states) */
 .aurora::before,
 .aurora::after {
   content: '';
   position: fixed;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(130px);
   z-index: 0;
   pointer-events: none;
 }
 .aurora::before {
-  width: 420px;
-  height: 420px;
-  top: -120px;
-  inset-inline-start: -120px;
-  background: rgba(79, 142, 247, 0.22);
+  width: 440px;
+  height: 440px;
+  top: -140px;
+  inset-inline-start: -130px;
+  background: rgba(201, 121, 42, 0.20);
 }
 .aurora::after {
-  width: 360px;
-  height: 360px;
-  bottom: -140px;
-  inset-inline-end: -120px;
-  background: rgba(240, 180, 41, 0.14);
+  width: 380px;
+  height: 380px;
+  bottom: -150px;
+  inset-inline-end: -130px;
+  background: rgba(139, 26, 74, 0.20);
+}
+
+/* Gold shimmer for the HAMIK wordmark */
+.shimmer-gold {
+  background: linear-gradient(100deg, #f0b429 20%, #fff3d0 40%, #f0b429 60%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Faint Persian geometric pattern for the conversation backdrop (~4%) */
+.persian-grid {
+  background-image:
+    linear-gradient(45deg, rgba(201, 121, 42, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(201, 121, 42, 0.05) 25%, transparent 25%);
+  background-size: 38px 38px;
 }

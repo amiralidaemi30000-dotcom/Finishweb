@@ -23,8 +23,8 @@ export function formatRelative(iso) {
   return new Intl.DateTimeFormat('fa-IR', { month: 'short', day: 'numeric' }).format(d)
 }
 
-// Stable accent color per user id, drawn from the brand palette.
-const PALETTE = ['#4F8EF7', '#F0B429', '#7C5CFF', '#22C7A9', '#FF6B81', '#36C5F0']
+// Stable accent color per user id, drawn from the warm Persian palette.
+const PALETTE = ['#C9792A', '#8B1A4A', '#B5683A', '#7A2A52', '#D08A3A', '#A33A5E']
 export function colorFor(id = '') {
   let hash = 0
   for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0

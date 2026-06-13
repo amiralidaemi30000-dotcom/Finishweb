@@ -24,17 +24,27 @@ subscriptions, and email/password auth.
 - **Optimistic sending** — bubbles appear instantly, reconcile on save.
 - **Security** — every table is guarded by RLS; clients only ever see their own data.
 
-## 🎨 Design
+## 🎨 Design — "with soul" (v2)
+
+A distinctly **Persian** palette — warm, not cold.
 
 | | |
 |---|---|
-| Background | `#0A0E1A` deep navy |
-| Primary | `#4F8EF7` electric blue |
-| Accent | `#F0B429` gold |
-| Text | `#FFFFFF` |
+| Background | `#0D0A0E` deep warm Persian night |
+| Primary | `#C9792A` saffron (زعفران) |
+| Secondary | `#8B1A4A` deep rose (رنگ گل) |
+| Text | `#F5EFE6` warm cream |
+| Encryption | `#2ECC71` trust green (security indicators only) |
+| Premium | `#F0B429` gold (rare moments) |
 
-Glassmorphism surfaces, aurora glows, floating particles, spring animations (Framer Motion).
-Hero imagery generated with Higgsfield.
+Glassmorphism cards, saffron→rose gradients, a green end-to-end-encryption lock at the top of
+every chat, gold-shimmer wordmark, rotating saffron ring on online avatars, and a faint Persian
+geometric backdrop. Hero + icon generated with Higgsfield.
+
+**Motion system** (Framer Motion — interaction only, ~30% of moments): page slide+fade,
+sent bubbles scale-bounce, received bubbles slide in from the left, button press scale-down,
+spring-physics list items, an unlock→lock intro on opening a chat, and a breathing typing
+indicator driven by **live Supabase broadcast** (real "is typing" presence, not faked).
 
 ## 🧱 Stack
 

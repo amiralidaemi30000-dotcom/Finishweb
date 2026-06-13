@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Lock, User, ArrowLeft, Loader2 } from 'lucide-react'
+import { Mail, Lock, User, Loader2, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { Logo, Wordmark } from '../components/Brand'
 import { HERO_BG } from '../lib/assets'
 
+const tap = { scale: 0.95 }
+const spring = { type: 'spring', stiffness: 500, damping: 18 }
+
 export default function Login() {
   const { signIn, signUp } = useAuth()
-  const [mode, setMode] = useState('signin') // 'signin' | 'signup'
+  const [mode, setMode] = useState('signin')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,7 +36,6 @@ export default function Login() {
           username: email.split('@')[0],
         })
         if (error) throw error
-        // If the project requires email confirmation, no session is returned.
         if (!data.session) {
           setInfo('حساب ساخته شد! اگر تأیید ایمیل فعال است، ایمیل خود را چک کنید — یا همین حالا وارد شوید.')
           setMode('signin')
@@ -51,29 +53,12 @@ export default function Login() {
 
   return (
     <div className="relative flex h-full flex-col overflow-y-auto px-7 pb-10 pt-16">
-      {/* Higgsfield-generated hero, dimmed behind the glass UI */}
+      {/* Higgsfield hero, warm and dimmed behind the glass */}
       <div
-        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-40"
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-45"
         style={{ backgroundImage: `url(${HERO_BG})` }}
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/70 to-ink" />
-      {/* floating particles */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <span
-            key={i}
-            className="absolute rounded-full bg-primary/30 blur-[1px] animate-float"
-            style={{
-              width: 6 + (i % 3) * 4,
-              height: 6 + (i % 3) * 4,
-              top: `${12 + i * 13}%`,
-              left: `${(i * 37) % 90}%`,
-              animationDelay: `${i * 0.7}s`,
-              opacity: 0.4,
-            }}
-          />
-        ))}
-      </div>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/70 to-ink" />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -81,15 +66,20 @@ export default function Login() {
         transition={{ duration: 0.5 }}
         className="relative z-10 flex flex-col items-center text-center"
       >
-        <div className="animate-float drop-shadow-[0_8px_30px_rgba(79,142,247,0.4)]">
+        <div className="drop-shadow-[0_8px_30px_rgba(201,121,42,0.45)]">
           <Logo size={68} />
         </div>
-        <Wordmark className="mt-5 text-4xl" />
-        <p className="mt-3 font-fa text-[15px] leading-7 text-white/55">
-          پیام‌رسانی که با آتش واقعی ساخته شده
+        <Wordmark shimmer className="mt-5 text-4xl" />
+        <p className="mt-3 font-fa text-[15px] leading-7 text-cream/60">
+          پیام‌رسانی که با عشق ساخته شده
           <br />
-          <span className="text-white/35">A messenger built with real fire.</span>
+          <span className="text-cream/35">A messenger built with real love.</span>
         </p>
+        {/* trust line */}
+        <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-trust/30 bg-trust/10 px-3 py-1">
+          <ShieldCheck size={14} className="text-trust" />
+          <span className="font-fa text-[12px] text-trust">رمزگذاری سرتاسری</span>
+        </div>
       </motion.div>
 
       <motion.form
@@ -97,9 +87,9 @@ export default function Login() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.15 }}
-        className="relative z-10 mt-10 glass-strong rounded-3xl p-6 shadow-glass"
+        className="glass-strong relative z-10 mt-8 rounded-3xl p-6 shadow-glass"
       >
-        <div className="mb-5 flex gap-1 rounded-2xl bg-white/[0.04] p-1">
+        <div className="mb-5 flex gap-1 rounded-2xl bg-cream/[0.04] p-1">
           <TabButton active={!isSignup} onClick={() => setMode('signin')}>
             ورود
           </TabButton>
@@ -146,31 +136,33 @@ export default function Login() {
           </Field>
         </div>
 
-        {error && (
-          <p className="mt-3 font-fa text-[13px] leading-6 text-rose-300/90">{error}</p>
-        )}
-        {info && (
-          <p className="mt-3 font-fa text-[13px] leading-6 text-emerald-300/90">{info}</p>
-        )}
+        {error && <p className="mt-3 font-fa text-[13px] leading-6 text-rose-soft">{error}</p>}
+        {info && <p className="mt-3 font-fa text-[13px] leading-6 text-trust/90">{info}</p>}
 
-        <button type="submit" disabled={busy} className="btn-primary mt-5 font-fa flex items-center justify-center gap-2">
+        <motion.button
+          type="submit"
+          disabled={busy}
+          whileTap={tap}
+          transition={spring}
+          className="btn-primary mt-5 flex items-center justify-center gap-2 font-fa"
+        >
           {busy && <Loader2 size={18} className="animate-spin" />}
           {isSignup ? 'ساختن حساب' : 'ورود به هامیک'}
-        </button>
+        </motion.button>
 
-        <p className="mt-4 text-center font-fa text-[13px] text-white/40">
+        <p className="mt-4 text-center font-fa text-[13px] text-cream/40">
           {isSignup ? 'قبلاً حساب دارید؟ ' : 'حساب ندارید؟ '}
           <button
             type="button"
             onClick={() => setMode(isSignup ? 'signin' : 'signup')}
-            className="font-semibold text-primary"
+            className="font-semibold text-saffron"
           >
             {isSignup ? 'وارد شوید' : 'بسازید'}
           </button>
         </p>
       </motion.form>
 
-      <p className="relative z-10 mt-8 text-center font-fa text-[12px] text-white/25">
+      <p className="relative z-10 mt-8 text-center font-fa text-[12px] text-cream/25">
         ساخته‌شده در فنلاند، برای هر ایرانی · Built for the Iranian diaspora
       </p>
     </div>
@@ -183,13 +175,13 @@ function TabButton({ active, children, onClick }) {
       type="button"
       onClick={onClick}
       className={`relative flex-1 rounded-xl py-2.5 font-fa text-sm font-semibold transition ${
-        active ? 'text-white' : 'text-white/40'
+        active ? 'text-cream' : 'text-cream/40'
       }`}
     >
       {active && (
         <motion.span
           layoutId="tab-pill"
-          className="absolute inset-0 rounded-xl bg-gradient-to-l from-primary/80 to-primary/40 shadow-glow"
+          className="absolute inset-0 rounded-xl bg-gradient-to-l from-saffron to-rose shadow-glow-saffron"
         />
       )}
       <span className="relative z-10">{children}</span>
@@ -200,10 +192,7 @@ function TabButton({ active, children, onClick }) {
 function Field({ icon: Icon, children }) {
   return (
     <div className="relative">
-      <Icon
-        size={18}
-        className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-white/35"
-      />
+      <Icon size={18} className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-cream/35" />
       {children}
     </div>
   )
