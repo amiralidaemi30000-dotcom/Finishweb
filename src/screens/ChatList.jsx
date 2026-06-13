@@ -57,7 +57,7 @@ export default function ChatList() {
   return (
     <motion.div {...page} className="flex h-full flex-col">
       {/* glass header — blur only, no solid background */}
-      <header className="z-20 border-b border-gold/[0.06] bg-lapis/[0.18] px-5 pb-4 pt-6 backdrop-blur-2xl">
+      <header className="z-20 border-b border-gold/[0.06] bg-lapis/15 px-5 pb-4 pt-6 backdrop-blur-2xl">
         <div className="flex items-center justify-between">
           <div>
             <Wordmark shimmer className="text-2xl" />
@@ -99,7 +99,7 @@ export default function ChatList() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate(`/c/${c.id}`)}
-                className="glass mb-2 flex w-full items-center gap-3 rounded-[14px] border-x-0 border-b-0 border-t border-gold/10 bg-lapis/[0.12] px-3 py-3 text-start transition hover:bg-lapis/25"
+                className="glass mb-2 flex w-full items-center gap-3 rounded-[14px] border-x-0 border-b-0 border-t border-gold/10 bg-lapis/15 px-3 py-3 text-start transition hover:bg-lapis/25"
               >
                 <Avatar name={c.title} src={c.avatar} size={54} online={i < 2} />
                 <div className="min-w-0 flex-1">
@@ -223,7 +223,7 @@ function NewChatSheet({ onClose }) {
               whileTap={{ scale: 0.98 }}
               onClick={() => start(p)}
               disabled={starting === p.id}
-              className="flex w-full items-center gap-3 rounded-2xl px-2 py-2.5 text-start transition hover:bg-lapis/20"
+              className="flex w-full items-center gap-3 rounded-2xl px-2 py-2.5 text-start transition hover:bg-lapis/25"
             >
               <Avatar name={p.display_name} src={p.avatar_url} size={46} />
               <div className="min-w-0 flex-1">

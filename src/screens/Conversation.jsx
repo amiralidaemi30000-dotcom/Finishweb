@@ -121,7 +121,7 @@ export default function Conversation() {
       className="flex h-full flex-col"
     >
       {/* Header — glass blur, faint gold hairline */}
-      <header className="z-20 flex items-center gap-3 border-b border-gold/[0.08] bg-lapis/[0.18] px-3 py-3 backdrop-blur-2xl">
+      <header className="z-20 flex items-center gap-3 border-b border-gold/[0.08] bg-lapis/15 px-3 py-3 backdrop-blur-2xl">
         <button onClick={() => navigate('/')} className="rounded-full p-2 text-pearl/70 transition hover:bg-pearl/5 active:scale-90" aria-label="بازگشت">
           <ArrowRight size={22} />
         </button>
@@ -140,7 +140,7 @@ export default function Conversation() {
         <div className="relative h-full space-y-1.5 overflow-y-auto px-4 py-4">
           {/* permanent encryption indicator */}
           <div className="mb-3 flex justify-center">
-            <div className="relative inline-flex items-center gap-1.5 rounded-full border border-trust/30 bg-lapis/20 px-3 py-1.5">
+            <div className="relative inline-flex items-center gap-1.5 rounded-full border border-trust/30 bg-lapis/15 px-3 py-1.5">
               <span className="absolute -inset-1 rounded-full bg-trust/15 blur-md" />
               <Lock size={12} className="relative text-gold" />
               <span className="relative font-fa text-[11px] text-trust">این مکالمه رمزگذاری شده است</span>
@@ -205,13 +205,13 @@ export default function Conversation() {
       </div>
 
       {/* Composer */}
-      <form onSubmit={handleSend} className="z-20 flex items-center gap-2 border-t border-gold/[0.08] bg-lapis/[0.18] px-3 py-3 backdrop-blur-2xl">
+      <form onSubmit={handleSend} className="z-20 flex items-center gap-2 border-t border-gold/[0.08] bg-lapis/15 px-3 py-3 backdrop-blur-2xl">
         <input
           value={draft}
           onChange={onDraftChange}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className={`w-full rounded-2xl border bg-lapis/20 px-4 py-3 font-fa text-[15px] text-pearl placeholder-pearl/40 outline-none transition ${
+          className={`w-full rounded-2xl border bg-lapis/15 px-4 py-3 font-fa text-[15px] text-pearl placeholder-pearl/40 outline-none transition ${
             focused ? 'border-gold/60 shadow-glow-gold' : 'border-gold/20'
           }`}
           placeholder="پیام بنویسید…"

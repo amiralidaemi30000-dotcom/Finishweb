@@ -40,15 +40,15 @@ body {
 }
 
 @layer components {
-  /* lapis glass with a barely-gold border */
+  /* lapis glass — canonical rgba(26,58,107,0.15) — with a barely-gold border */
   .glass {
-    @apply border border-gold/[0.10] bg-lapis/[0.12] backdrop-blur-xl;
+    @apply border border-gold/[0.10] bg-lapis/15 backdrop-blur-xl;
   }
   .glass-strong {
-    @apply border border-gold/[0.14] bg-lapis/20 backdrop-blur-2xl;
+    @apply border border-gold/[0.14] bg-lapis/15 backdrop-blur-2xl;
   }
   .input-glass {
-    @apply w-full rounded-2xl border border-gold/20 bg-lapis/20 px-4 py-3.5
+    @apply w-full rounded-2xl border border-gold/20 bg-lapis/15 px-4 py-3.5
            text-[15px] text-pearl placeholder-pearl/40 outline-none transition
            focus:border-gold/60 focus:shadow-glow-gold;
   }
