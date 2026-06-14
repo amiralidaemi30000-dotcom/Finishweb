@@ -58,8 +58,8 @@ export default function Profile() {
 
   return (
     <motion.div {...page} className="flex h-full flex-col overflow-y-auto">
-      {/* lapis banner: dark → lapis → dark, gold hairline base */}
-      <div className="relative h-36 shrink-0 bg-gradient-to-l from-base via-lapis to-base">
+      {/* subtle banner: midnight with a faint lapis breath, gold hairline base */}
+      <div className="relative h-36 shrink-0 bg-gradient-to-l from-base via-lapis/30 to-base">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gold/30" />
         <button onClick={() => navigate('/')} className="absolute end-3 top-5 rounded-full p-2 text-pearl/90 transition hover:bg-black/20 active:scale-90" aria-label="بازگشت">
           <ArrowRight size={22} />
