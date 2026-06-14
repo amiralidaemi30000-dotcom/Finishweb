@@ -41,7 +41,7 @@ export async function loadConversations(myId) {
       ...c,
       members,
       other,
-      title: c.is_group ? c.title || 'گفتگوی گروهی' : other?.display_name || 'کاربر هامیک',
+      title: c.is_group ? c.title || 'گفتگوی گروهی' : other?.display_name || 'کاربر جاوید نام',
       avatar: c.is_group ? null : other?.avatar_url || null,
       lastMessage: lastByConv[c.id] || null,
     }

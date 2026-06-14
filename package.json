@@ -1,9 +1,9 @@
 {
-  "name": "hamik-messenger",
+  "name": "javid-nam",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "HAMIK — a private, beautiful, encrypted-feeling messenger for the global Iranian community.",
+  "description": "Javid Nam — a private, beautiful, encrypted-feeling messenger for the global Iranian community.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

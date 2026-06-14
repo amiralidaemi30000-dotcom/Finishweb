@@ -145,7 +145,7 @@ export default function Login() {
           className="btn-gold mt-5 flex items-center justify-center gap-2 font-fa text-base"
         >
           {busy && <Loader2 size={18} className="animate-spin" />}
-          <span className="text-base">{isSignup ? 'ساختن حساب' : 'ورود به هامیک'}</span>
+          <span className="text-base">{isSignup ? 'ساختن حساب' : 'ورود به جاوید نام'}</span>
         </motion.button>
 
         <p className="mt-4 text-center font-fa text-[13px] text-pearl/40">

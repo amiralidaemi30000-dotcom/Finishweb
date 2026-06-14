@@ -31,14 +31,6 @@ body {
   font-family: 'Vazirmatn', 'Inter', system-ui, sans-serif;
 }
 
-/* ---- Persian mosque: 8-pointed star (Khatam) mosaic at ~5% ---- */
-/* Two overlapped rotated squares form the octagram; faint lapis stroke. */
-.mosque {
-  background-color: #080b14;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='74' height='74' viewBox='0 0 74 74'%3E%3Cg fill='none' stroke='%232952A3' stroke-opacity='0.5' stroke-width='1'%3E%3Crect x='18.5' y='18.5' width='37' height='37'/%3E%3Crect x='18.5' y='18.5' width='37' height='37' transform='rotate(45 37 37)'/%3E%3Ccircle cx='37' cy='37' r='4'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 74px 74px;
-}
-
 @layer components {
   /* lapis glass — canonical rgba(26,58,107,0.15) — with a barely-gold border */
   .glass {
