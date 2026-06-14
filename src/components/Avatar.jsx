@@ -9,7 +9,7 @@ export default function Avatar({ name, src, size = 48, online = false, ring = fa
       {(online || ring) && (
         <div
           className="absolute inset-0 rounded-full animate-spin-slow"
-          style={{ background: 'conic-gradient(from 0deg, #D4AF37, #F0D060, #1A3A6B, #D4AF37)' }}
+          style={{ background: 'conic-gradient(from 0deg, #D4AF37, #F0D060, #B8901F, #D4AF37)' }}
         />
       )}
       <div className="absolute overflow-hidden rounded-full" style={{ inset: pad }}>
