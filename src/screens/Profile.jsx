@@ -71,8 +71,8 @@ export default function Profile() {
           <motion.div whileTap={{ scale: 1.06 }} transition={{ type: 'spring', stiffness: 300, damping: 15 }} className="drop-shadow-[0_0_30px_rgba(212,175,55,0.3)]">
             <Avatar name={name || user.email} src={profile?.avatar_url} size={90} ring />
           </motion.div>
-          <p className="mt-3 font-fa text-[22px] font-bold text-gold">{name || 'کاربر هامیک'}</p>
-          <p className="mt-1 font-fa text-[14px] text-pearl/60" dir="ltr">@{username || 'hamik'}</p>
+          <p className="mt-3 font-fa text-[22px] font-bold text-gold">{name || 'کاربر جاوید نام'}</p>
+          <p className="mt-1 font-fa text-[14px] text-pearl/60" dir="ltr">@{username || 'javidnam'}</p>
         </div>
 
         {/* real stats */}
@@ -121,7 +121,7 @@ export default function Profile() {
           خروج از حساب
         </motion.button>
 
-        <p className="mt-8 text-center font-fa text-[12px] text-pearl/25">HAMIK · نسخه ۳.۰ · لاجورد و طلا</p>
+        <p className="mt-8 text-center font-fa text-[12px] text-pearl/25">Javid Nam · جاوید نام · نسخه ۳.۰</p>
       </div>
     </motion.div>
   )

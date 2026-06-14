@@ -61,7 +61,7 @@ export default function ChatList() {
         <div className="flex items-center justify-between">
           <div>
             <Wordmark shimmer className="text-2xl" />
-            <p className="mt-0.5 font-fa text-[11px] text-pearl/50">هامیک — فضای امن توست</p>
+            <p className="mt-0.5 font-fa text-[11px] text-pearl/50">جاوید نام — فضای امن توست</p>
           </div>
           <motion.button whileTap={tap} onClick={() => navigate('/me')} className="rounded-full" aria-label="پروفایل">
             <Avatar name={profile?.display_name || user.email} src={profile?.avatar_url} size={40} ring />
@@ -263,7 +263,7 @@ function EmptyState({ onStart, hasAny }) {
       </div>
       <p className="font-fa text-lg font-bold text-pearl">{hasAny ? 'چیزی پیدا نشد' : 'هنوز گفتگویی نیست'}</p>
       <p className="mt-2 font-fa text-sm leading-7 text-pearl/45">
-        {hasAny ? 'عبارت دیگری را امتحان کنید.' : 'اولین گفتگوی خود را شروع کنید و با دوستانتان در هامیک حرف بزنید.'}
+        {hasAny ? 'عبارت دیگری را امتحان کنید.' : 'اولین گفتگوی خود را شروع کنید و با دوستانتان در جاوید نام حرف بزنید.'}
       </p>
       {!hasAny && (
         <motion.button whileTap={tap} onClick={onStart} className="btn-gold mt-6 w-auto px-8 font-fa text-base">

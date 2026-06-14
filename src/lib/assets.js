@@ -1,4 +1,4 @@
-// HAMIK v3 — Persian Lapis Gold imagery (Higgsfield, nano_banana).
+// Javid Nam — Persian Lapis Gold imagery (Higgsfield, nano_banana).
 // A Sheikh-Lotfollah-style mosque ceiling: lapis + gold, dark and moody.
 // Used at low opacity behind the auth screen; the CSS mosque pattern is the
 // always-present base so the app never depends on this loading.

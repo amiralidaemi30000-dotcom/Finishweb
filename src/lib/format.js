@@ -24,7 +24,7 @@ export function formatRelative(iso) {
 }
 
 // Stable accent color per user id — lapis family, gold reserved for accents.
-const PALETTE = ['#2952A3', '#1A3A6B', '#3A5A8B', '#2A4575', '#35538A', '#1F3A66']
+const PALETTE = ['#1A3A6B', '#234373', '#1F3358', '#2A3E66', '#16294A', '#2D4670']
 export function colorFor(id = '') {
   let hash = 0
   for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0

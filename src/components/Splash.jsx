@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-// App-open splash: pure midnight → هامیک writes itself in gold → one breath → fade.
+// App-open splash: pure midnight → جاوید نام writes itself in gold → one breath → fade.
 export default function Splash({ onDone }) {
   useEffect(() => {
     const t = setTimeout(onDone, 2500)
@@ -31,20 +31,20 @@ export default function Splash({ onDone }) {
             animate={{ pathLength: 1, opacity: 1 }}
             transition={{ duration: 1.4, delay: 0.4, ease: 'easeInOut' }}
           />
-          {/* هامیک in gold, fading in over the stroke */}
+          {/* جاوید نام in gold, fading in over the stroke */}
           <motion.text
             x="120"
-            y="64"
+            y="62"
             textAnchor="middle"
             fontFamily="Vazirmatn, Inter, sans-serif"
             fontWeight="700"
-            fontSize="52"
+            fontSize="34"
             fill="#D4AF37"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.1 }}
           >
-            هامیک
+            جاوید نام
           </motion.text>
         </svg>
         <motion.p

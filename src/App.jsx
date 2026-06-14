@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from './lib/AuthContext'
 import { Logo } from './components/Brand'
 import Splash from './components/Splash'
+import { HERO_BG } from './lib/assets'
 import Login from './screens/Login'
 import ChatList from './screens/ChatList'
 import Conversation from './screens/Conversation'
@@ -39,10 +40,20 @@ export default function App() {
     setSplash(false)
   }
 
-  // Phone-shaped frame on desktop, full-bleed on mobile. Mosque pattern wall-to-wall.
+  // Phone-shaped frame on desktop, full-bleed on mobile.
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-base sm:p-6">
-      <div className="mosque relative z-10 flex h-screen w-full max-w-[440px] flex-col overflow-hidden sm:h-[860px] sm:max-h-[92vh] sm:rounded-[36px] sm:border sm:border-gold/15 sm:shadow-glass">
+      <div className="relative z-10 flex h-screen w-full max-w-[440px] flex-col overflow-hidden bg-base sm:h-[860px] sm:max-h-[92vh] sm:rounded-[36px] sm:border sm:border-gold/15 sm:shadow-glass">
+        {/* lapis → midnight gradient base (always present) */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'linear-gradient(160deg, #1A3A6B 0%, #0E1A30 38%, #080B14 78%)' }}
+        />
+        {/* Higgsfield mosque ceiling at 8% — soft, no hard outlines (falls back to the gradient above) */}
+        <div
+          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.08]"
+          style={{ backgroundImage: `url(${HERO_BG})` }}
+        />
         <AnimatePresence>{splash && <Splash key="splash" onDone={endSplash} />}</AnimatePresence>
 
         <AnimatePresence mode="wait">
