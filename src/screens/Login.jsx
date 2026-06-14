@@ -58,11 +58,11 @@ export default function Login() {
 
   return (
     <motion.div {...page} className="relative flex h-full flex-col overflow-y-auto px-7 pb-10 pt-16">
-      {/* Higgsfield mosque ceiling, dimmed — real lapis + gold tilework */}
-      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url(${HERO_BG})` }} />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-base/50 via-base/75 to-base" />
-      {/* soft lapis glow from the top, like light through a mosque dome */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-lapis/30 to-transparent" />
+      {/* Higgsfield mosque ceiling, very faint */}
+      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.06]" style={{ backgroundImage: `url(${HERO_BG})` }} />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-base/60 via-base/80 to-base" />
+      {/* faint warm-dark glow from the top */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-lapis/10 to-transparent" />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}

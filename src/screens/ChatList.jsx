@@ -7,7 +7,7 @@ import { supabase } from '../lib/supabase'
 import { loadConversations, searchUsers, startDirectConversation } from '../lib/api'
 import { formatRelative } from '../lib/format'
 import Avatar from '../components/Avatar'
-import { Wordmark } from '../components/Brand'
+import { Wordmark, Logo } from '../components/Brand'
 
 const seenKey = (id) => `hamik:seen:${id}`
 const lastSeen = (id) => Number(localStorage.getItem(seenKey(id)) || 0)
@@ -63,8 +63,8 @@ export default function ChatList() {
             <Wordmark shimmer className="text-2xl" />
             <p className="mt-0.5 font-fa text-[11px] text-pearl/50">جاوید نام — فضای امن توست</p>
           </div>
-          <motion.button whileTap={tap} onClick={() => navigate('/me')} className="rounded-full" aria-label="پروفایل">
-            <Avatar name={profile?.display_name || user.email} src={profile?.avatar_url} size={40} ring />
+          <motion.button whileTap={tap} onClick={() => navigate('/me')} aria-label="پروفایل">
+            <Logo size={40} />
           </motion.button>
         </div>
 
