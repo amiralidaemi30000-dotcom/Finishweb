@@ -54,9 +54,9 @@ export function AuthProvider({ children }) {
     profile,
     loading,
     refreshProfile: () => loadProfile(session?.user?.id),
-    signUp: (email, password, meta) =>
-      supabase.auth.signUp({ email, password, options: { data: meta } }),
-    signIn: (email, password) => supabase.auth.signInWithPassword({ email, password }),
+    // Phone OTP auth — sends a 6-digit SMS code, then verifies it.
+    sendOtp: (phone) => supabase.auth.signInWithOtp({ phone }),
+    verifyOtp: (phone, token) => supabase.auth.verifyOtp({ phone, token, type: 'sms' }),
     signOut: () => supabase.auth.signOut(),
   }
 
