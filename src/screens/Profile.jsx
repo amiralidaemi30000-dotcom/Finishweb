@@ -69,7 +69,7 @@ export default function Profile() {
       <div className="-mt-12 px-5 pb-12">
         <div className="flex flex-col items-center">
           <motion.div whileTap={{ scale: 1.06 }} transition={{ type: 'spring', stiffness: 300, damping: 15 }} className="drop-shadow-[0_0_30px_rgba(212,175,55,0.3)]">
-            <Avatar name={name || user.email} src={profile?.avatar_url} size={90} ring />
+            <Avatar name={name || user.phone || user.email} src={profile?.avatar_url} size={90} ring />
           </motion.div>
           <p className="mt-3 font-fa text-[22px] font-bold text-gold">{name || 'کاربر جاوید نام'}</p>
           <p className="mt-1 font-fa text-[14px] text-pearl/60" dir="ltr">@{username || 'javidnam'}</p>
